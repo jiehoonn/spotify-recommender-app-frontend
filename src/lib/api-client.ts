@@ -69,28 +69,21 @@ class ApiClient {
       ...options,
     };
 
-    console.log(`🌐 [ApiClient] Making request to: ${url}`);
-    console.log(`📝 [ApiClient] Config:`, config);
-
     try {
       const response = await fetch(url, config);
-      console.log(`📡 [ApiClient] Response status: ${response.status} ${response.statusText}`);
 
       if (!response.ok) {
         const errorData = await response
           .json()
           .catch(() => ({ error: "Unknown error" }));
-        console.error(`❌ [ApiClient] Error response:`, errorData);
         throw new Error(
           errorData.error || `HTTP ${response.status}: ${response.statusText}`
         );
       }
 
       const data = await response.json();
-      console.log(`✅ [ApiClient] Success response:`, data);
       return data;
     } catch (error) {
-      console.error(`❌ [ApiClient] Request failed: ${endpoint}`, error);
       throw error;
     }
   }

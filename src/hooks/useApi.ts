@@ -13,23 +13,17 @@ export function useRandomSongs() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchRandomSongs = async () => {
-    console.log('🔍 [useRandomSongs] Starting fetch request...');
     setLoading(true);
     setError(null);
 
     try {
-      console.log('🌐 [useRandomSongs] Calling apiClient.getRandomSongs()...');
       const response = await apiClient.getRandomSongs();
-      console.log('✅ [useRandomSongs] Success! Response:', response);
       setSongs(response);
     } catch (err) {
-      console.error('❌ [useRandomSongs] Error:', err);
       const errorMessage = err instanceof Error ? err.message : "Failed to fetch songs";
-      console.error('❌ [useRandomSongs] Error message:', errorMessage);
       setError(errorMessage);
     } finally {
       setLoading(false);
-      console.log('🏁 [useRandomSongs] Fetch completed');
     }
   };
 

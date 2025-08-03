@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRandomSongs, useSubmitRating } from '@/hooks/useApi'
 import { RatingScale } from './RatingScale'
 import StatsDashboard from './StatsDashboard'
@@ -26,45 +26,6 @@ export function SongRatingInterface({ sessionId }: Props) {
 
   const [rating, setRating] = useState<number | null>(null)
   const [ratingsCount, setRatingsCount] = useState(0)
-  const [debugMode, setDebugMode] = useState(false)
-  const [apiBaseUrl, setApiBaseUrl] = useState('')
-
-  // Set API base URL on client side to avoid hydration mismatch
-  useEffect(() => {
-    setApiBaseUrl(process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000')
-  }, [])
-
-  // Debug component
-  const DebugPanel = () => (
-    <div className="fixed bottom-4 right-4 bg-black/90 text-white p-4 rounded-lg text-xs max-w-md z-50">
-      <div className="flex justify-between items-center mb-2">
-        <h4 className="font-bold">🐛 Debug Panel</h4>
-        <button
-          onClick={() => setDebugMode(false)}
-          className="text-red-400 hover:text-red-300"
-        >
-          ✕
-        </button>
-      </div>
-      <div className="space-y-1">
-        <div>API Base URL: {apiBaseUrl}</div>
-        <div>Loading: {loading ? '✅' : '❌'}</div>
-        <div>Songs: {songs ? '✅' : '❌'}</div>
-        <div>Error: {error || 'None'}</div>
-        <div>Submit Error: {submitError || 'None'}</div>
-        <div>Session ID: {sessionId}</div>
-        <button
-          onClick={() => {
-            console.log('🔄 Manual refetch triggered');
-            fetchNewSongs();
-          }}
-          className="bg-blue-600 px-2 py-1 rounded text-xs mt-2"
-        >
-          Refetch Songs
-        </button>
-      </div>
-    </div>
-  )
 
   const handleSubmitRating = async () => {
     if (!songs || rating === null) return
@@ -142,19 +103,6 @@ export function SongRatingInterface({ sessionId }: Props) {
 
   return (
     <div className="space-y-8">
-      {/* Debug Mode Toggle */}
-      <div className="fixed top-4 right-4 z-40">
-        <button
-          onClick={() => setDebugMode(!debugMode)}
-          className="bg-gray-800/80 text-white px-3 py-2 rounded-lg text-sm hover:bg-gray-700/80 transition-colors"
-        >
-          🐛 Debug
-        </button>
-      </div>
-
-      {/* Debug Panel */}
-      {debugMode && <DebugPanel />}
-
       {/* Statistics Dashboard */}
       <StatsDashboard />
       
