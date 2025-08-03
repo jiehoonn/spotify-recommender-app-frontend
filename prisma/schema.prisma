@@ -1,0 +1,44 @@
+// This is your Prisma schema file.
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Song {
+  id          String @id @default(cuid())
+  spotifyId   String @unique
+  name        String
+  artist      String
+  previewUrl  String?
+  album       String?
+  duration    Int?
+  popularity  Int?
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  ratingsAsTrack1 Rating[] @relation("Track1")
+  ratingsAsTrack2 Rating[] @relation("Track2")
+}
+
+model Rating {
+  id          String @id @default(cuid())
+  track1Id    String
+  track2Id    String
+  rating      Int    // 1-10 scale
+  sessionId   String? // Optional session tracking
+  userAgent   String?
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  track1      Song @relation("Track1", fields: [track1Id], references: [id])
+  track2      Song @relation("Track2", fields: [track2Id], references: [id])
+  
+  @@unique([track1Id, track2Id, sessionId])
+}
